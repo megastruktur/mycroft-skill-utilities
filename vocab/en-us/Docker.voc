@@ -1,0 +1,6 @@
+docker apm start
+docker atm start
+docker adm start
+docker apm stop
+docker atm stop
+docker adm stop
