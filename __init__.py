@@ -29,6 +29,10 @@ class UtilitiesSkill(MycroftSkill):
             require("Docker").build()
         self.register_intent(docker_intent, self.handle_docker_intent)
 
+        commands_intent = IntentBuilder("CommandsIntent"). \
+            require("Commands").build()
+        self.register_intent(commands_intent, self.handle_commands_intent)
+
 
     # Vagrant handler.
     # Code: environment
@@ -79,38 +83,30 @@ class UtilitiesSkill(MycroftSkill):
         self.command_in_path(path, com)
         self.speak(command + "ed " + bucket + " " + virtual_type)
 
-    def stop(self):
-        pass
+    # Various PC commands.
+    def handle_commands_intent(self, message):
 
-    # Execute command in Path.
-    def command_in_path(self, path, command):
-        wd = os.getcwd()
-        os.chdir(path)
-        subprocess.call(command, shell=True)
-        os.chdir(wd)
+        # Parse the message.
+        message_string = self._s(message.data.get('utterance'))
 
-    
-    # Get synonym
-    def _s(self, phrase):
+        # Suspend PC.
+        if message_string == 'suspend':
+            self.speak("Suspending computer")
+            self.command_execute("systemctl suspend")
+        # VPN handling.
+        # @todo Make some abstract class for voice PC commands execution
+        #   and start/stop.
+        elif message_string == 'vpn start' or message_string == 'vpn stop':
+            if message_string == 'vpn start':
+                self.speak("Starting VPN")
+                self.command_execute("nmcli con up Sensely")
+            else:
+                self.speak("Stopping VPN")
+                self.command_execute("nmcli con down Sensely")
 
-        synonyms = {
-            "stop" : "stop",
-            "halt" : "stop",
-            "down" : "stop",
-            "start" : "start",
-            "up" : "start",
-            "of" : "start",
-            "atm" : "apm",
-            "adm" : "apm",
-            "apm" : "apm",
-            "claymation" : "clinician"
-        }
-
-        if phrase in synonyms:
-            return synonyms[phrase]
-        
-        return phrase
-
+    ########################################################################################
+    ##################################### HELPERS ##########################################
+    ########################################################################################
     # Get shell command which should be executed.
     def get_virtual_shell_command(self, virtual, bucket, command):
 
@@ -142,6 +138,44 @@ class UtilitiesSkill(MycroftSkill):
             return path[bucket]
 
         return False
+
+    # Execute command.
+    def command_execute(self, command):
+        subprocess.call(command, shell=True)
+
+    # Execute command in Path.
+    def command_in_path(self, path, command):
+        wd = os.getcwd()
+        os.chdir(path)
+        self.command_execute(command)
+        os.chdir(wd)
+
+    def stop(self):
+        pass
+    
+    # Get synonym
+    def _s(self, phrase):
+
+        synonyms = {
+            "stop" : "stop",
+            "halt" : "stop",
+            "down" : "stop",
+            "start" : "start",
+            "up" : "start",
+            "of" : "start",
+            "atm" : "apm",
+            "adm" : "apm",
+            "apm" : "apm",
+            "claymation" : "clinician",
+            "suspend" : "suspend",
+            "vpn start" : "vpn start",
+            "vpn stop" : "vpn stop"
+        }
+
+        if phrase in synonyms:
+            return synonyms[phrase]
+        
+        return phrase
 
 
 def create_skill():
