@@ -1,5 +1,6 @@
 environment up clinician
 environment of clinician
+environment op clinician
 environment start clinician
 environment down clinician
 environment stop clinician

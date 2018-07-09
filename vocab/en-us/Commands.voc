@@ -1,3 +1,5 @@
 suspend
 vpn start
 vpn stop
+bpm start
+bpm stop

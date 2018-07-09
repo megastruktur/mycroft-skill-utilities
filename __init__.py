@@ -163,13 +163,16 @@ class UtilitiesSkill(MycroftSkill):
             "start" : "start",
             "up" : "start",
             "of" : "start",
+            "op" : "start",
             "atm" : "apm",
             "adm" : "apm",
             "apm" : "apm",
             "claymation" : "clinician",
             "suspend" : "suspend",
             "vpn start" : "vpn start",
-            "vpn stop" : "vpn stop"
+            "vpn stop" : "vpn stop",
+            "bpm start" : "vpn start",
+            "bpm stop" : "vpn stop"
         }
 
         if phrase in synonyms:
