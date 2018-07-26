@@ -43,7 +43,12 @@ class UtilitiesSkill(MycroftSkill):
         message_string = message.data.get('utterance').split()
 
         command = self._s(message_string[1])
-        bucket = self._s(message_string[2])
+
+        try:
+            bucket = self._s(message_string[2])
+        except IndexError:
+            bucket = ""
+
         self.virtuals_starter("Vagrant", bucket, command)
 
         print('----------------------')
@@ -131,7 +136,8 @@ class UtilitiesSkill(MycroftSkill):
 
         path = {
             "apm" : "/home/megastruktur/Documents/Projects/apm/apm-lara",
-            "clinician" : "/home/megastruktur/Documents/Projects/Sensely/src/sensely-web-app"
+            "clinician" : "/home/megastruktur/Documents/Projects/Sensely/src/sensely-web-app",
+            "": "/home/megastruktur/Documents/Projects/Sensely/src/sensely-web-app"
         }
 
         if bucket in path:
