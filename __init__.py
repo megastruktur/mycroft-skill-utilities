@@ -131,7 +131,7 @@ class UtilitiesSkill(MycroftSkill):
 
         path = {
             "apm" : "/home/megastruktur/Documents/Projects/apm/apm-lara",
-            "clinician" : "/home/megastruktur/Documents/Projects/Sensely/src/sensely-chef"
+            "clinician" : "/home/megastruktur/Documents/Projects/Sensely/src/sensely-web-app"
         }
 
         if bucket in path:
@@ -167,7 +167,6 @@ class UtilitiesSkill(MycroftSkill):
             "atm" : "apm",
             "adm" : "apm",
             "apm" : "apm",
-            "claymation" : "clinician",
             "suspend" : "suspend",
             "vpn start" : "vpn start",
             "vpn stop" : "vpn stop",

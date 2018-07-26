@@ -1,7 +1,7 @@
-environment up clinician
-environment of clinician
-environment op clinician
-environment start clinician
-environment down clinician
-environment stop clinician
-environment halt clinician
+environment up
+environment of
+environment op
+environment start
+environment down
+environment stop
+environment halt
