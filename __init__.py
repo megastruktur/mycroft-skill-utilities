@@ -108,6 +108,10 @@ class UtilitiesSkill(MycroftSkill):
             else:
                 self.speak("Stopping VPN")
                 self.command_execute("nmcli con down Sensely")
+        elif self._s(message_string) == 'fix_cors':
+            self.speak("Fixing KORS")
+            self.command_execute("scp /home/megastruktur/sensely/sensely-web-app/builds/latest/.htaccess clinician:/var/www/prod")
+            self.speak("KORS are fixed")
 
     ########################################################################################
     ##################################### HELPERS ##########################################
@@ -177,7 +181,9 @@ class UtilitiesSkill(MycroftSkill):
             "vpn start" : "vpn start",
             "vpn stop" : "vpn stop",
             "bpm start" : "vpn start",
-            "bpm stop" : "vpn stop"
+            "bpm stop" : "vpn stop",
+            "fix kors" : "fix_cors",
+            "fix cars" : "fix_cors"
         }
 
         if phrase in synonyms:
