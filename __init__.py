@@ -1,5 +1,5 @@
 from adapt.intent import IntentBuilder
-from mycroft.skills.core import MycroftSkill
+from mycroft.skills.core import MycroftSkill, intent_handler
 from mycroft.util.log import getLogger
 #from subprocess import call
 import subprocess
@@ -17,21 +17,28 @@ class UtilitiesSkill(MycroftSkill):
         
       super(UtilitiesSkill, self).__init__(name="UtilitiesSkill")
 
-    # Functionality init.
-    def initialize(self):
+    @intent_handler(IntentBuilder("VPNStart").require("VPN")
+                    .require("Start"))
+    def handle_vpn_start(self, message):
+        self.speak("Starting VPN")
+        self.command_execute("nmcli con up Sensely")
 
-        # Intents.
-        vagrant_intent = IntentBuilder("VagrantIntent"). \
-            require("Vagrant").build()
-        self.register_intent(vagrant_intent, self.handle_vagrant_intent)
+    @intent_handler(IntentBuilder("VPNStop").require("VPN")
+                    .require("Stop"))
+    def handle_vpn_stop(self, message):
+        self.speak("Stopping VPN")
+        self.command_execute("nmcli con down Sensely")
 
-        docker_intent = IntentBuilder("DockerIntent"). \
-            require("Docker").build()
-        self.register_intent(docker_intent, self.handle_docker_intent)
-
-        commands_intent = IntentBuilder("CommandsIntent"). \
-            require("Commands").build()
-        self.register_intent(commands_intent, self.handle_commands_intent)
+    @intent_handler(IntentBuilder("FixCORS").require("CORS"))
+    def handle_fix_cors(self, message):
+        self.speak("Fixing KORS")
+        self.command_execute("scp /home/megastruktur/sensely/sensely-web-app/builds/latest/.htaccess clinician:/var/www/prod")
+        self.speak("KORS are fixed")
+  
+    @intent_handler(IntentBuilder("Suspend").require("Suspend"))
+    def handle_suspend(self, message):
+        self.speak("Suspending computer")
+        self.command_execute("systemctl suspend")
 
 
     # Vagrant handler.
@@ -93,25 +100,6 @@ class UtilitiesSkill(MycroftSkill):
 
         # Parse the message.
         message_string = self._s(message.data.get('utterance'))
-
-        # Suspend PC.
-        if message_string == 'suspend':
-            self.speak("Suspending computer")
-            self.command_execute("systemctl suspend")
-        # VPN handling.
-        # @todo Make some abstract class for voice PC commands execution
-        #   and start/stop.
-        elif message_string == 'vpn start' or message_string == 'vpn stop':
-            if message_string == 'vpn start':
-                self.speak("Starting VPN")
-                self.command_execute("nmcli con up Sensely")
-            else:
-                self.speak("Stopping VPN")
-                self.command_execute("nmcli con down Sensely")
-        elif self._s(message_string) == 'fix_cors':
-            self.speak("Fixing KORS")
-            self.command_execute("scp /home/megastruktur/sensely/sensely-web-app/builds/latest/.htaccess clinician:/var/www/prod")
-            self.speak("KORS are fixed")
 
     ########################################################################################
     ##################################### HELPERS ##########################################
